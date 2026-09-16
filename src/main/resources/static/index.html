@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>Student Attendance Management System</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f4f6f9;
+        color: #222;
+    }
+
+    .header {
+        background: #1f2937;
+        color: white;
+        padding: 25px;
+        text-align: center;
+    }
+
+    .header h1 {
+        margin: 0;
+        font-size: 30px;
+    }
+
+    .header p {
+        margin: 8px 0 0;
+        color: #d1d5db;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 25px auto;
+        padding: 0 20px;
+    }
+
+    .card {
+        background: white;
+        padding: 25px;
+        margin-bottom: 25px;
+        border-radius: 12px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+        margin-top: 0;
+        color: #1f2937;
+    }
+
+    input,
+    select {
+        width: 100%;
+        padding: 12px;
+        margin: 7px 0;
+        border: 1px solid #d1d5db;
+        border-radius: 7px;
+        font-size: 15px;
+    }
+
+    button {
+        border: none;
+        padding: 11px 18px;
+        margin: 7px 5px 7px 0;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    button:hover {
+        opacity: 0.9;
+    }
+
+    .add-btn {
+        background: #2563eb;
+        color: white;
+    }
+
+    .view-btn {
+        background: #374151;
+        color: white;
+    }
+
+    .present-btn {
+        background: #16a34a;
+        color: white;
+    }
+
+    .absent-btn {
+        background: #dc2626;
+        color: white;
+    }
+
+    .message {
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+    .student-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .student-card {
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        padding: 18px;
+        border-radius: 10px;
+    }
+
+    .student-card h3 {
+        margin-top: 0;
+        color: #2563eb;
+    }
+
+    .record {
+        background: #f9fafb;
+        border-left: 5px solid #2563eb;
+        padding: 15px;
+        margin-top: 10px;
+        border-radius: 7px;
+    }
+
+    .percentage-box {
+        text-align: center;
+        padding: 25px;
+        background: #f9fafb;
+        border-radius: 10px;
+        margin-top: 15px;
+    }
+
+    .percentage {
+        font-size: 42px;
+        font-weight: bold;
+        color: #2563eb;
+    }
+
+    .info {
+        color: #555;
+        margin-bottom: 15px;
+    }
+
+    @media (max-width: 600px) {
+        .header h1 {
+            font-size: 23px;
+        }
+
+        .container {
+            padding: 0 10px;
+        }
+
+        .card {
+            padding: 18px;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+```
+<!-- HEADER -->
+
+<div class="header">
+
+    <h1>🎓 Student Attendance Management System</h1>
+
+    <p>Manage students and attendance easily</p>
+
+</div>
+
+
+<div class="container">
+
+
+    <!-- STUDENT REGISTRATION -->
+
+    <div class="card">
+
+        <h2>👨‍🎓 Student Registration</h2>
+
+        <p class="info">
+            Enter student details and register a new student.
+        </p>
+
+        <input
+            type="text"
+            id="name"
+            placeholder="Student Name"
+        >
+
+        <input
+            type="text"
+            id="rollNo"
+            placeholder="Roll Number"
+        >
+
+        <input
+            type="text"
+            id="branch"
+            placeholder="Branch"
+        >
+
+        <input
+            type="email"
+            id="email"
+            placeholder="Email"
+        >
+
+        <button
+            class="add-btn"
+            onclick="addStudent()"
+        >
+            ➕ Add Student
+        </button>
+
+        <p
+            id="studentMessage"
+            class="message"
+        ></p>
+
+    </div>
+
+
+    <!-- STUDENTS -->
+
+    <div class="card">
+
+        <h2>👥 Students</h2>
+
+        <button
+            class="view-btn"
+            onclick="loadStudents()"
+        >
+            🔄 View Students
+        </button>
+
+        <div
+            id="studentList"
+            class="student-grid"
+        ></div>
+
+    </div>
+
+
+    <!-- ATTENDANCE -->
+
+    <div class="card">
+
+        <h2>📝 Mark Attendance</h2>
+
+        <p class="info">
+            Select a student and mark today's attendance.
+        </p>
+
+        <select id="studentId">
+
+            <option value="">
+                -- Select Student --
+            </option>
+
+        </select>
+
+        <br>
+
+        <button
+            class="present-btn"
+            onclick="markAttendance('Present')"
+        >
+            ✅ PRESENT
+        </button>
+
+        <button
+            class="absent-btn"
+            onclick="markAttendance('Absent')"
+        >
+            ❌ ABSENT
+        </button>
+
+        <p
+            id="attendanceMessage"
+            class="message"
+        ></p>
+
+    </div>
+
+
+    <!-- ATTENDANCE RECORDS -->
+
+    <div class="card">
+
+        <h2>📋 Attendance Records</h2>
+
+        <button
+            class="view-btn"
+            onclick="loadAttendance()"
+        >
+            🔄 View Attendance
+        </button>
+
+        <div id="attendanceList"></div>
+
+    </div>
+
+
+    <!-- PERCENTAGE -->
+
+    <div class="card">
+
+        <h2>📊 Attendance Percentage</h2>
+
+        <p class="info">
+            Select a student above and calculate their attendance.
+        </p>
+
+        <button
+            class="view-btn"
+            onclick="calculatePercentage()"
+        >
+            📊 Calculate Percentage
+        </button>
+
+        <div class="percentage-box">
+
+            <div
+                id="percentage"
+                class="percentage"
+            >
+                -
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // ==============================
+    // ADD STUDENT
+    // ==============================
+
+    function addStudent() {
+
+        const student = {
+
+            name:
+                document.getElementById("name").value,
+
+            rollNo:
+                document.getElementById("rollNo").value,
+
+            branch:
+                document.getElementById("branch").value,
+
+            email:
+                document.getElementById("email").value
+        };
+
+
+        if (
+            !student.name ||
+            !student.rollNo ||
+            !student.branch ||
+            !student.email
+        ) {
+
+            document.getElementById("studentMessage").innerText =
+                "Please fill all student details.";
+
+            return;
+        }
+
+
+        fetch("/students", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(student)
+
+        })
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            document.getElementById("studentMessage").innerText =
+                "✅ Student added successfully! Student ID: " + data.id;
+
+
+            document.getElementById("name").value = "";
+            document.getElementById("rollNo").value = "";
+            document.getElementById("branch").value = "";
+            document.getElementById("email").value = "";
+
+
+            loadStudents();
+            loadStudentDropdown();
+
+        })
+
+        .catch(error => {
+
+            document.getElementById("studentMessage").innerText =
+                "❌ Error adding student.";
+
+        });
+
+    }
+
+
+    // ==============================
+    // LOAD STUDENTS
+    // ==============================
+
+    function loadStudents() {
+
+        fetch("/students")
+
+        .then(response => response.json())
+
+        .then(students => {
+
+            let html = "";
+
+
+            students.forEach(student => {
+
+                html += `
+
+                    <div class="student-card">
+
+                        <h3>
+                            👨‍🎓 ${student.name}
+                        </h3>
+
+                        <b>ID:</b>
+                        ${student.id}
+                        <br><br>
+
+                        <b>Roll No:</b>
+                        ${student.rollNo}
+                        <br><br>
+
+                        <b>Branch:</b>
+                        ${student.branch}
+                        <br><br>
+
+                        <b>Email:</b>
+                        ${student.email}
+
+                    </div>
+
+                `;
+
+            });
+
+
+            document.getElementById("studentList").innerHTML =
+                html;
+
+        })
+
+        .catch(error => {
+
+            document.getElementById("studentList").innerText =
+                "❌ Error loading students.";
+
+        });
+
+    }
+
+
+    // ==============================
+    // STUDENT DROPDOWN
+    // ==============================
+
+    function loadStudentDropdown() {
+
+        fetch("/students")
+
+        .then(response => response.json())
+
+        .then(students => {
+
+            const dropdown =
+                document.getElementById("studentId");
+
+
+            dropdown.innerHTML = `
+
+                <option value="">
+                    -- Select Student --
+                </option>
+
+            `;
+
+
+            students.forEach(student => {
+
+                const option =
+                    document.createElement("option");
+
+
+                option.value =
+                    student.id;
+
+
+                option.textContent =
+                    student.id +
+                    " - " +
+                    student.name +
+                    " (" +
+                    student.rollNo +
+                    ")";
+
+
+                dropdown.appendChild(option);
+
+            });
+
+        })
+
+        .catch(error => {
+
+            console.log("Error loading student dropdown");
+
+        });
+
+    }
+
+
+    // ==============================
+    // MARK ATTENDANCE
+    // ==============================
+
+    function markAttendance(status) {
+
+        const studentId =
+            document.getElementById("studentId").value;
+
+
+        if (studentId === "") {
+
+            document.getElementById("attendanceMessage").innerText =
+                "⚠️ Please select a student.";
+
+            return;
+        }
+
+
+        const attendance = {
+
+            studentId:
+                Number(studentId),
+
+            attendanceDate:
+                new Date()
+                    .toISOString()
+                    .split("T")[0],
+
+            status:
+                status
+
+        };
+
+
+        fetch("/attendance", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body:
+                JSON.stringify(attendance)
+
+        })
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            document.getElementById("attendanceMessage").innerText =
+                "✅ Attendance marked: " +
+                data.status;
+
+
+            loadAttendance();
+
+            calculatePercentage();
+
+        })
+
+        .catch(error => {
+
+            document.getElementById("attendanceMessage").innerText =
+                "❌ Error marking attendance.";
+
+        });
+
+    }
+
+
+    // ==============================
+    // LOAD ATTENDANCE
+    // ==============================
+
+    function loadAttendance() {
+
+        fetch("/attendance")
+
+        .then(response => response.json())
+
+        .then(records => {
+
+            let html = "";
+
+
+            records.forEach(record => {
+
+                html += `
+
+                    <div class="record">
+
+                        <b>Attendance ID:</b>
+                        ${record.id}
+
+                        <br><br>
+
+                        <b>Student ID:</b>
+                        ${record.studentId}
+
+                        <br><br>
+
+                        <b>Date:</b>
+                        ${record.attendanceDate}
+
+                        <br><br>
+
+                        <b>Status:</b>
+                        ${record.status}
+
+                    </div>
+
+                `;
+
+            });
+
+
+            if (records.length === 0) {
+
+                html =
+                    "<p>No attendance records found.</p>";
+
+            }
+
+
+            document.getElementById("attendanceList").innerHTML =
+                html;
+
+        })
+
+        .catch(error => {
+
+            document.getElementById("attendanceList").innerText =
+                "❌ Error loading attendance.";
+
+        });
+
+    }
+
+
+    // ==============================
+    // CALCULATE PERCENTAGE
+    // ==============================
+
+    function calculatePercentage() {
+
+        const studentId =
+            Number(
+                document.getElementById("studentId").value
+            );
+
+
+        if (!studentId) {
+
+            document.getElementById("percentage").innerText =
+                "-";
+
+            document.getElementById("attendanceMessage").innerText =
+                "⚠️ Please select a student.";
+
+            return;
+        }
+
+
+        fetch("/attendance")
+
+        .then(response => response.json())
+
+        .then(records => {
+
+            const studentRecords =
+                records.filter(record =>
+                    Number(record.studentId) === studentId
+                );
+
+
+            const total =
+                studentRecords.length;
+
+
+            const present =
+                studentRecords.filter(record =>
+                    String(record.status).toLowerCase() ===
+                    "present"
+                ).length;
+
+
+            if (total === 0) {
+
+                document.getElementById("percentage").innerText =
+                    "No Records";
+
+                return;
+            }
+
+
+            const percentage =
+                (present / total) * 100;
+
+
+            document.getElementById("percentage").innerText =
+                percentage.toFixed(2) + "%";
+
+        })
+
+        .catch(error => {
+
+            document.getElementById("percentage").innerText =
+                "Error";
+
+        });
+
+    }
+
+
+    // ==============================
+    // PAGE LOAD
+    // ==============================
+
+    window.onload = function() {
+
+        loadStudents();
+
+        loadStudentDropdown();
+
+        loadAttendance();
+
+    };
+
+</script>
+```
+
+</body>
+</html>
